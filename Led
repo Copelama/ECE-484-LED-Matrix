@@ -2,6 +2,9 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "lib/LedControl.h"  // Include LedControl header file
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdint.h>
 
 // LedControl instance
 LedControl lc;
@@ -76,4 +79,3 @@ int main() {
 
     return 0;
 }
-
