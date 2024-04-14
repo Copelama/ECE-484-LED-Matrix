@@ -21,8 +21,8 @@ def run_command(command):
 print ("Number of arguments: %d" %  len(sys.argv))
 print ("Argument List: %s" % str(sys.argv))
 
-files_to_compile = ['lcd', 'lib\hd44780']
-file_to_compile = 'lcd'
+files_to_compile = ['led', 'lib\LedControl']
+file_to_compile = 'led'
 if len(sys.argv) == 2:
     com_port = 'com4'
 else:
