@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include "lib/LedControl.h"  // Include LedControl header file
+
+// LedControl instance
+LedControl lc;
+
+// Delay time between display updates
+unsigned long delaytime = 250;
+
+// Simulating Arduino setup function
+void setup() {
+    // Initialize LedControl for one device
+    ledControlInit(&lc, 1);
+
+    // Wake up MAX72XX
+    shutdown(&lc, 0, false);
+
+    // Set scan limit to display all digits (0-7)
+    setScanLimit(&lc, 0, 7);
+
+    // Set intensity to a medium value (0-15)
+    setIntensity(&lc, 0, 8);
+
+    // Clear the display
+    clearDisplay(&lc, 0);
+}
+
+// Function to display "Arduino" on a 7-segment display
+void writeArduinoOn7Segment() {
+    setChar(&lc, 0, 0, 'a', false);
+    usleep(delaytime * 1000);
+    setRow(&lc, 0, 0, 0x05);
+    usleep(delaytime * 1000);
+    setChar(&lc, 0, 0, 'd', false);
+    usleep(delaytime * 1000);
+    setRow(&lc, 0, 0, 0x1c);
+    usleep(delaytime * 1000);
+    setRow(&lc, 0, 0, 0x10);
+    usleep(delaytime * 1000);
+    setRow(&lc, 0, 0, 0x15);
+    usleep(delaytime * 1000);
+    setRow(&lc, 0, 0, 0x1D);
+    usleep(delaytime * 1000);
+    clearDisplay(&lc, 0);
+    usleep(delaytime * 1000);
+}
+
+// Function to scroll hexadecimal numbers and letters on display
+void scrollDigits() {
+    for (int i = 0; i < 13; i++) {
+        setDigit(&lc, 0, 3, i, false);
+        setDigit(&lc, 0, 2, i + 1, false);
+        setDigit(&lc, 0, 1, i + 2, false);
+        setDigit(&lc, 0, 0, i + 3, false);
+        usleep(delaytime * 1000);
+    }
+    clearDisplay(&lc, 0);
+    usleep(delaytime * 1000);
+}
+
+// Simulating Arduino loop function
+void loop() {
+    writeArduinoOn7Segment();
+    scrollDigits();
+}
+
+// Main function, entry point of the program
+int main() {
+    setup();  // Simulating Arduino setup
+
+    while (1) {
+        loop();  // Simulating Arduino loop
+    }
+
+    return 0;
+}
+
