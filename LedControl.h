@@ -2,6 +2,7 @@
 #define LedControl_h
 
 #include <stdint.h>  // For standard integer types
+#include <avr/pgmspace.h>
 
 // Define constants for control pins
 #define SPI_MOSI_PIN  11
