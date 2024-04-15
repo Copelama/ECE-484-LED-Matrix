@@ -12,6 +12,13 @@ An LED-Matrix is an array of LEDs that can be controlled individually. This proj
 - Jumper Wires
 - HiLetGo MAX7219 LED-Matrix
 
+## Directions:
+
+1. Download all files and place into into their own folder.
+2. Open Windows Powershell and type cd "path to your folder containing the files"
+3. Run compile script through Windows Powershell using "Python compile_script.py 4 com4" (your com port might be different, be sure to check!).
+
+
 ## Schematic:
 ![image](https://github.com/Copelama/ECE-484-LED-Matrix/assets/118077780/3c97b849-8d4e-416b-951f-249311c8f10f)
 
