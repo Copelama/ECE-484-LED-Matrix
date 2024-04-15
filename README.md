@@ -16,4 +16,8 @@ An LED-Matrix is an array of LEDs that can be controlled individually. This proj
 ![image](https://github.com/Copelama/ECE-484-LED-Matrix/assets/118077780/3c97b849-8d4e-416b-951f-249311c8f10f)
 
 ## HiLetGo MAX7219 Datasheet:
+Below is the datasheet for the LED-Matrix, note that multiple LED-Matrices can be chained together, this demonstration only uses one LED-Matrix.
 https://www.sparkfun.com/datasheets/Components/General/COM-09622-MAX7219-MAX7221.pdf 
+
+
+## Demonstration:
