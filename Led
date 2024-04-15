@@ -1,36 +1,40 @@
-#include "lib/LedControl.h"  // Include LedControl header file
+#include <stdint.h>
+#include <unistd.h>
+#include "lib/LedControl.h"
 #include <avr/io.h>
-#include <unistd.h> 
 
-LedControl lc = LedControl(12, 11, 10, 1);
+// Define the LED control instance
+LedControl lc;
 
 // Image switching time
 unsigned long delaytime1 = 500;
-unsigned long delaytime2 = 50;
 
 void setup() {
-    // Initialize the LedControl library
-    lc.shutdown(0, false);   // Wakeup call
-    lc.setIntensity(0, 8);   // Set brightness
-    lc.clearDisplay(0);      // Clear display
+    // Initialize the LED control with one device
+    ledControlInit(&lc, 1);
+
+    // Wakeup the device and set intensity
+    shutdown(&lc, 0, false);    // Wakeup call
+    setIntensity(&lc, 0, 8);    // Set brightness
+    clearDisplay(&lc, 0);       // Clear the display
 }
 
-void writeCharOnMatrix(byte charData[8]) {
+void writeCharOnMatrix(uint8_t charData[8]) {
     for (int i = 0; i < 8; i++) {
-        lc.setRow(0, i, charData[i]);  // Display character row by row
+        setRow(&lc, 0, i, charData[i]);  // Display character row by row
     }
     usleep(delaytime1 * 1000);          // Delay between characters
 }
 
 void writeArduinoOnMatrix() {
-    // Define characters
-    byte A[] = {0b00000000, 0b00111100, 0b00100100, 0b00100100, 0b00111100, 0b00100100, 0b00100100, 0b00000000};
-    byte R[] = {0b00000000, 0b00111000, 0b00100100, 0b00100100, 0b00111000, 0b00100100, 0b00100100, 0b00000000};
-    byte D[] = {0b00000000, 0b00111100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00111100, 0b00000000};
-    byte U[] = {0b00000000, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100100, 0b00011000, 0b00000000};
-    byte I[] = {0b00000000, 0b00111000, 0b00010000, 0b00010000, 0b00010000, 0b00010000, 0b00111000, 0b00000000};
-    byte N[] = {0b00000000, 0b00100010, 0b00110010, 0b00101010, 0b00100110, 0b00100010, 0b00000000, 0b00000000};
-    byte O[] = {0b00000000, 0b00111100, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b00111100, 0b00000000};
+    // Define binary patterns for each character
+    uint8_t A[] = {0b00111100, 0b01000010, 0b01000010, 0b01111110, 0b01000010, 0b01000010, 0b01000010, 0b00000000};
+    uint8_t R[] = {0b01111100, 0b01000010, 0b01000010, 0b01111100, 0b01001000, 0b01000100, 0b01000010, 0b00000000};
+    uint8_t D[] = {0b01111100, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b01111100, 0b00000000};
+    uint8_t U[] = {0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b00111100, 0b00000000};
+    uint8_t I[] = {0b01111110, 0b00001000, 0b00001000, 0b00001000, 0b00001000, 0b00001000, 0b01111110, 0b00000000};
+    uint8_t N[] = {0b01000010, 0b01100010, 0b01010010, 0b01001010, 0b01000110, 0b01000010, 0b00000000, 0b00000000};
+    uint8_t O[] = {0b00111100, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b00111100, 0b00000000};
 
     // Display characters sequentially
     writeCharOnMatrix(A);
@@ -42,19 +46,16 @@ void writeArduinoOnMatrix() {
     writeCharOnMatrix(O);
 
     // Clear display
-    for (int i = 0; i < 8; i++) {
-        lc.setRow(0, i, 0);
-    }
+    clearDisplay(&lc, 0);
     usleep(delaytime1 * 1000); // Delay after displaying full word
 }
 
 int main() {
     setup(); // Setup LED matrix
+
     while (1) {
         writeArduinoOnMatrix(); // Display "ARDUINO" repeatedly
     }
-    return 0;
-}
 
     return 0;
 }
