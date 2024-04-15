@@ -1,81 +1,60 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdbool.h>
 #include "lib/LedControl.h"  // Include LedControl header file
 #include <avr/io.h>
-#include <util/delay.h>
-#include <stdint.h>
+#include <unistd.h> 
 
-// LedControl instance
-LedControl lc;
+LedControl lc = LedControl(12, 11, 10, 1);
 
-// Delay time between display updates
-unsigned long delaytime = 250;
+// Image switching time
+unsigned long delaytime1 = 500;
+unsigned long delaytime2 = 50;
 
-// Simulating Arduino setup function
 void setup() {
-    // Initialize LedControl for one device
-    ledControlInit(&lc, 1);
-
-    // Wake up MAX72XX
-    shutdown(&lc, 0, false);
-
-    // Set scan limit to display all digits (0-7)
-    setScanLimit(&lc, 0, 7);
-
-    // Set intensity to a medium value (0-15)
-    setIntensity(&lc, 0, 8);
-
-    // Clear the display
-    clearDisplay(&lc, 0);
+    // Initialize the LedControl library
+    lc.shutdown(0, false);   // Wakeup call
+    lc.setIntensity(0, 8);   // Set brightness
+    lc.clearDisplay(0);      // Clear display
 }
 
-// Function to display "Arduino" on a 7-segment display
-void writeArduinoOn7Segment() {
-    setChar(&lc, 0, 0, 'a', false);
-    usleep(delaytime * 1000);
-    setRow(&lc, 0, 0, 0x05);
-    usleep(delaytime * 1000);
-    setChar(&lc, 0, 0, 'd', false);
-    usleep(delaytime * 1000);
-    setRow(&lc, 0, 0, 0x1c);
-    usleep(delaytime * 1000);
-    setRow(&lc, 0, 0, 0x10);
-    usleep(delaytime * 1000);
-    setRow(&lc, 0, 0, 0x15);
-    usleep(delaytime * 1000);
-    setRow(&lc, 0, 0, 0x1D);
-    usleep(delaytime * 1000);
-    clearDisplay(&lc, 0);
-    usleep(delaytime * 1000);
-}
-
-// Function to scroll hexadecimal numbers and letters on display
-void scrollDigits() {
-    for (int i = 0; i < 13; i++) {
-        setDigit(&lc, 0, 3, i, false);
-        setDigit(&lc, 0, 2, i + 1, false);
-        setDigit(&lc, 0, 1, i + 2, false);
-        setDigit(&lc, 0, 0, i + 3, false);
-        usleep(delaytime * 1000);
+void writeCharOnMatrix(byte charData[8]) {
+    for (int i = 0; i < 8; i++) {
+        lc.setRow(0, i, charData[i]);  // Display character row by row
     }
-    clearDisplay(&lc, 0);
-    usleep(delaytime * 1000);
+    usleep(delaytime1 * 1000);          // Delay between characters
 }
 
-// Simulating Arduino loop function
-void loop() {
-    writeArduinoOn7Segment();
-    scrollDigits();
+void writeArduinoOnMatrix() {
+    // Define characters
+    byte A[] = {0b00000000, 0b00111100, 0b00100100, 0b00100100, 0b00111100, 0b00100100, 0b00100100, 0b00000000};
+    byte R[] = {0b00000000, 0b00111000, 0b00100100, 0b00100100, 0b00111000, 0b00100100, 0b00100100, 0b00000000};
+    byte D[] = {0b00000000, 0b00111100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00111100, 0b00000000};
+    byte U[] = {0b00000000, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100100, 0b00011000, 0b00000000};
+    byte I[] = {0b00000000, 0b00111000, 0b00010000, 0b00010000, 0b00010000, 0b00010000, 0b00111000, 0b00000000};
+    byte N[] = {0b00000000, 0b00100010, 0b00110010, 0b00101010, 0b00100110, 0b00100010, 0b00000000, 0b00000000};
+    byte O[] = {0b00000000, 0b00111100, 0b01000010, 0b01000010, 0b01000010, 0b01000010, 0b00111100, 0b00000000};
+
+    // Display characters sequentially
+    writeCharOnMatrix(A);
+    writeCharOnMatrix(R);
+    writeCharOnMatrix(D);
+    writeCharOnMatrix(U);
+    writeCharOnMatrix(I);
+    writeCharOnMatrix(N);
+    writeCharOnMatrix(O);
+
+    // Clear display
+    for (int i = 0; i < 8; i++) {
+        lc.setRow(0, i, 0);
+    }
+    usleep(delaytime1 * 1000); // Delay after displaying full word
 }
 
-// Main function, entry point of the program
 int main() {
-    setup();  // Simulating Arduino setup
-
+    setup(); // Setup LED matrix
     while (1) {
-        loop();  // Simulating Arduino loop
+        writeArduinoOnMatrix(); // Display "ARDUINO" repeatedly
     }
+    return 0;
+}
 
     return 0;
 }
